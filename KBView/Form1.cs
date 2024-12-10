@@ -25,10 +25,7 @@ namespace KBView
 
         static EventWaitHandle _waitHandle = new AutoResetEvent(false);
 
-
-
         
-
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -37,7 +34,6 @@ namespace KBView
             }
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                //MessageBox.Show("okay");
                 
                     contextMenuStrip1.Show(pictureBox1, e.X, e.Y);
                     //MessageBox.Show("okay");
@@ -59,6 +55,11 @@ namespace KBView
             //picBox.Refresh();
                         
             pictureBox1.Image = (Image)picImage;
+
+            if (전체화면ToolStripMenuItem.Checked)
+            {
+                //fitImage();
+            }
         }
 
 
@@ -77,11 +78,6 @@ namespace KBView
 
             pictureBox1.Width = newSize.Width;
             pictureBox1.Height = newSize.Height;
-
-            //pictureBox1.Image = (Image)bmp;
-
-            //CenterPictureBox(pictureBox1, bmp);
-
 
         }
 
@@ -123,7 +119,6 @@ namespace KBView
                     Bitmap bitMapImg = new Bitmap(img);
 
                     CenterPictureBox(pictureBox1, bitMapImg);
-                    //pictureBox1_zoom(1);
 
 
                     try
@@ -316,12 +311,8 @@ namespace KBView
             }
             else zoomLevel = 0.8f;
 
-            //pictureBox1.Image = Image.FromFile("C:\\Documents and Settings\\Administrator\\daymin.com\\973691257.jpg");
-            
             Image img = pictureBox1.Image;
             
-            //MessageBox.Show("ddd");
-
             Bitmap bitMapImg = new Bitmap(img);
             Bitmap tmp = new Bitmap(cut_file);
 
@@ -329,9 +320,7 @@ namespace KBView
             Bitmap bmp = new Bitmap(tmp, newSize);
 
             pictureBox1.Width = newSize.Width;
-            
             pictureBox1.Height = newSize.Height;
-
             pictureBox1.Image = (Image)bmp;
 
             CenterPictureBox(pictureBox1, bmp);
@@ -350,17 +339,11 @@ namespace KBView
             {
                 Bitmap b = new Bitmap(ofd.FileName);
                 cut_file = ofd.FileName;
-                //imagePanel1.CanvasSize = b.Size;
-                //pictureBox1.Image = b;
-
-                //pictureBox1.Location = new Point((this.Width / 2) - (b.Width / 2),
-                //                        (this.Height / 2) - (b.Height / 2));
-                                
-                //pictureBox1_zoom(1);
+                
                 Bitmap tmp = new Bitmap(cut_file);
-                if (tmp.Size.Height > pictureBox1.Size.Height)
+                if (전체화면ToolStripMenuItem.Checked)
                 {
-                    FitImageScreen(tmp);
+                   // fitImage();
                 }
                 else CenterPictureBox(pictureBox1, tmp);
 
@@ -385,11 +368,8 @@ namespace KBView
             try { 
             Bitmap bmp = new Bitmap(tmp, newSize);
                 pictureBox1.Width = newSize.Width;
-
                 pictureBox1.Height = newSize.Height;
-
                 pictureBox1.Image = (Image)bmp;
-
                 CenterPictureBox(pictureBox1, bmp);
             }
             catch { MessageBox.Show("failed"); }
@@ -433,7 +413,12 @@ namespace KBView
                     cut_file = filePaths[pos];
                     //pictureBox1_zoom(1);
                     Bitmap tmp = new Bitmap(cut_file);
-                    CenterPictureBox(pictureBox1, tmp);
+                    //CenterPictureBox(pictureBox1, tmp);
+                    if (전체화면ToolStripMenuItem.Checked)
+                    {
+                        fitImage();
+                    }
+                    
                     toolStripStatusLabel1.Text = pos+"번째 "+"가로" + pictureBox1.Image.Width.ToString() + " 세로 " + pictureBox1.Image.Height.ToString();
 
 
@@ -451,16 +436,11 @@ namespace KBView
             if (cut_file != null)
             {
                 fileName = cut_file;
-                // MessageBox.Show(fileName);
-
-                //string currFile = pictureBox1.Tag.ToString();
-                //MessageBox.Show(path);
                 if (pos <= 0)
                 {
 
                     pos = Array.IndexOf(filePaths, fileName);
-                    // MessageBox.Show(pos.ToString());
-
+                    
                 }
                 try
                 {
@@ -480,9 +460,6 @@ namespace KBView
             this.KeyDown += new KeyEventHandler(Form1_KeyDown);
         }
 
-        
-            
-      
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -535,6 +512,38 @@ namespace KBView
             float c_width, c_height;
             float n_width, n_height;
 
+            /*
+
+            if (전체화면ToolStripMenuItem.Checked)
+            {
+                전체화면ToolStripMenuItem.Checked = false;
+            } else 전체화면ToolStripMenuItem.Checked = true;
+
+            */
+
+            if (cut_file != null)
+            {
+
+                c_width = pictureBox1.Width;
+                c_height = pictureBox1.Height;
+
+                n_height = this.Height - 100;
+                n_width = c_width / c_height * n_height;
+                
+                   Size newSize = new Size((int)(n_width), (int)(n_height));
+                    Bitmap tmp = new Bitmap(cut_file);
+                    Bitmap bmp = new Bitmap(tmp, newSize);
+                    CenterPictureBox(pictureBox1, bmp);
+
+            }
+
+        }
+
+        void fitImage()
+        {
+            float c_width, c_height;
+            float n_width, n_height;
+
             if (cut_file != null)
             {
 
@@ -544,16 +553,13 @@ namespace KBView
 
                 n_height = this.Height - 100;
                 n_width = c_width / c_height * n_height;
-              
-                
-                   Size newSize = new Size((int)(n_width), (int)(n_height));
-                    Bitmap tmp = new Bitmap(cut_file);
-                    Bitmap bmp = new Bitmap(tmp, newSize);
-                    CenterPictureBox(pictureBox1, bmp);
 
+                Size newSize = new Size((int)(n_width), (int)(n_height));
+                Bitmap tmp = new Bitmap(cut_file);
+                Bitmap bmp = new Bitmap(tmp, newSize);
+                CenterPictureBox(pictureBox1, bmp);
 
             }
-
         }
 
         private void button1_Click_2(object sender, EventArgs e)
